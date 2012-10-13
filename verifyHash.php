@@ -1,15 +1,15 @@
 <?php
   /** 
   *  SVEN ANDERS ROBBESTAD (C) 2009 <anders@robbestad.com>.  All rights reserved.
-  *  http://www.magicode.org
+  *  http://www.svenardo.com
   *  http://www.robbestad.com
   * 
   *  Description:
-  *  secureHash creates a hash based on sha256 and salt based on uniqid. 
-  *  If the passwords gets compromised after this is implemented, then you 
-  *  have problems with packet sniffing, or your users select really bad passwords. 
-  *  Always use SSL when transmitting and authenticating user passwords. 
-  *
+  *  SecureHash creates a hash based on sha512 and salt based on uniqid. 
+  *  This combination creates a password hash that is is virtually unfeasible
+  *  to crack without ludicrous amount of funds or hardware.
+  *  The password simply cannot be decrypted without knowing the password, salt and hash.
+  * ¨
   *  USAGE:
   *  Instantiate class: 
   *	 $securePassword=new secureHash(); 

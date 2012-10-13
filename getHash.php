@@ -1,7 +1,7 @@
 <?php
   /** 
-  *  SVEN ANDERS ROBBESTAD (C) 2009 <anders@robbestad.com>.  All rights reserved.
-  *  http://www.magicode.org
+  *  SVEN ANDERS ROBBESTAD (C) 2009 <anders@robbestad.com>.
+  *  http://www.svenardo.com
   *  http://www.robbestad.com
   * 
   *  Description:
