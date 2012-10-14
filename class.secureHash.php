@@ -56,13 +56,12 @@ class secureHash
     private $rounds;
     private $prefix;
 
-    public function __construct($rounds=10,$prefix="svenardo"){
+    public function __construct($rounds=12){
     if(CRYPT_BLOWFISH != 1) {
       throw new Exception("Bcrypt is not supported. Please upgrade your installation.");
     }
 
     $this->rounds = $rounds;
-    $this->prefix = $prefix;
     }
         
 	private function createSalt(){
@@ -70,7 +69,7 @@ class secureHash
        // 'true' adds additional entropy
 	   // previous version used uniqid
        // return $this->salt=uniqid(rand(), true);
-             return $this->salt=sprintf('$2a$%02d$%s', $this->rounds, substr(strtr(base64_encode($this->getBytes()), '+', '.'), 0, 22));
+       return $this->salt=sprintf('$2a$%02d$%s', $this->rounds, substr(strtr(base64_encode($this->getBytes()), '+', '.'), 0, 22));
 	}
  private function getBytes() {
     // this entire function is a direct copy of the function with the same name from https://gist.github.com/1070401    
