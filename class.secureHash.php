@@ -5,7 +5,7 @@
   *  http://www.robbestad.com
   * 
   *  Description:
-  *  SecureHash creates a hash based on sha512 and salt based on uniqid. 
+  *  SecureHash creates a hash based on blowfish. 
   *  This combination creates a password hash that is is virtually unfeasible
   *  to crack without ludicrous amount of funds or hardware.
   *  The password simply cannot be decrypted without knowing the password, salt and hash.
@@ -51,21 +51,59 @@
   */
              
 class secureHash
-    {
-    public function __construct(){
+{
         
+    private $rounds;
+    private $prefix;
+
+    public function __construct($rounds=10,$prefix="svenardo"){
+    if(CRYPT_BLOWFISH != 1) {
+      throw new Exception("Bcrypt is not supported. Please upgrade your installation.");
+    }
+
+    $this->rounds = $rounds;
+    $this->prefix = $prefix;
     }
         
 	private function createSalt(){
-       # Create random hash based on the current time in microseconds
-       # 'true' adds additional entropy
-			 return $this->salt=uniqid(rand(), true);
+       // Create random hash based on the current time in microseconds
+       // 'true' adds additional entropy
+	   // previous version used uniqid
+       // return $this->salt=uniqid(rand(), true);
+             return $this->salt=sprintf('$2a$%02d$%s', $this->rounds, substr(strtr(base64_encode($this->getBytes()), '+', '.'), 0, 22));
 	}
+ private function getBytes() {
+    // this entire function is a direct copy of the function with the same name from https://gist.github.com/1070401    
+    $bytes = '';
+    if(function_exists('openssl_random_pseudo_bytes') &&
+        (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN')) {
+      $bytes = openssl_random_pseudo_bytes(18);
+    }
 
+    if($bytes === '' && is_readable('/dev/urandom') &&
+       ($hRand = @fopen('/dev/urandom', 'rb')) !== FALSE) {
+      $bytes = fread($hRand, 18);
+      fclose($hRand);
+    }
+    
+    if($bytes === '') {
+      $key = uniqid($this->prefix, true);
+      
+      // 12 rounds of HMAC must be reproduced / created verbatim, no known shortcuts.
+      // Changed the hash algorithm from salsa20, which has been removed from PHP 5.4.
+      for($i = 0; $i < 12; $i++) {
+        $bytes = hash_hmac('snefru256', microtime() . $bytes, $key, true);
+        usleep(10);
+      }
+    }
+    
+    return $bytes;
+  }
     private function createHash($input,$salt){
-    	 # Create hash on supplied input and salt. Can be used to create new hash
-    	 # or verify existing
-    	 return $this->hash=hash("sha512",$input.$salt);  //function "hash" req. php v5.1.2 or better
+    	 // Create hash on supplied input and salt. Can be used to create new hash
+    	 // or verify existing
+         return $this->hash = crypt($input, $salt);
+         
     }
     
     public function returnHash($input)
