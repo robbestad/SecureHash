@@ -54,7 +54,6 @@
     {
 
         private $rounds;
-        private $prefix;
 
         public function __construct($rounds=12){
             if(CRYPT_BLOWFISH != 1) {
@@ -110,14 +109,10 @@
 
         public function returnHash($input)
         {
-            # Checks if submitted var is longer than 3 chars
-            # this could be handled better with an error
-            # exception
             if(strlen($input)<3)
-                return false;
+                throw new Exception("Submitted password is too short.");
 
-            # Will return an array with a hashed password and the salt it used
-            //return( array("salt"=>$this->CreateSalt(),"hash"=>$this->CreateHash($input,$this->salt)));
+            # Will return a string with a hashed password and the salt it used
             return( $this->CreateHash($input,$this->CreateSalt()));
         }
 
