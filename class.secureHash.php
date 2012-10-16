@@ -11,21 +11,8 @@
     *  The password simply cannot be decrypted without knowing the password, salt and hash.
     *
     *  USAGE:
-    *  Instantiate class: 
-    *	 $securePassword=new secureHash(); 
-    *  
-    *  To get hash:
-    *  if($hashArray=$securePassword->returnHash("inputPassword")){ ... }
-    *  If false, then password is too short. If true, then $hashArray is populated with hash and salt
-    *  for instance: 
-    *  [0] => 141484a3fb3b6cbdba0.06563388 
-    *  [1] => 6f301dd6d467469bee2a485bc9490c67176d310a27f4c60c1b3202f85caa93c1f6cea36b550e9689a3adcc048935b8d35da4bd18923ffafb71a8c44779ed6f2a  
-    *  where [0] is salt, [1] is hash
-    *
-    *  To check the hash:
-    *  if($verifyHash=$securePassword->verifyHash("inputPassword",$hash,$salt)) { ... }  
-    *  submit submitted password plus previously stored hash and salt, returns true if match, false if not
-    *   
+    *  see demo.php  
+    * 
     *  License:
     *  Redistribution and use in source and binary forms, with or without
     *  modification, are permitted provided that the following conditions are met:
@@ -64,42 +51,26 @@
         }
 
         
-        private function createSalt(){
-            return $this->salt=sprintf('$2a$%02d$%s', $this->rounds, substr(strtr(base64_encode($this->getBytes()), '+', '.'), 0, 22));
-        }
-        
-        
         /**
-         * getBytes function.
-         * Will generate a random string to use for salting
+         * createSalt function.
+         * Creates a random salt for the encryption
          * @access private
          * @return string
          */
-        private function getBytes() {
-            $bytes = '';
-            if(function_exists('openssl_random_pseudo_bytes') &&
-                (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN')) {
-                $bytes = openssl_random_pseudo_bytes(18);
-            }
-
-            if($bytes === '' && is_readable('/dev/urandom') &&
-                ($hRand = @fopen('/dev/urandom', 'rb')) !== FALSE) {
-                $bytes = fread($hRand, 18);
-                fclose($hRand);
-            }
-
-            if($bytes === '') {
-                $key = uniqid(rand(), true);
-
-                // 12 rounds of HMAC must be reproduced 
-                for($i = 0; $i <12; $i++) {
-                    $bytes = hash_hmac('snefru256', microtime() . $bytes, $key, true);
-                    usleep(10);
-                }
-            }
-
-            return $bytes;
-        }
+        private function createSalt(){
+        	//This config will run blowfish for 16 rounds
+            $pre = '$2a$'.$this->rounds.'$';
+            $end = '$';
+            $salt = "";
+			$bcryptBaseChars ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789./$';
+            
+			for($i=0; $i<18; $i++){
+			    $salt .= $bcryptBaseChars[mt_rand(0,strlen($bcryptBaseChars)-1)];
+			}
+            
+			$this->salt=$pre . $salt.'$';
+			return $this->salt;
+		}
         
         
         /**

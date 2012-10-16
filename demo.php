@@ -50,7 +50,7 @@ $inputPassword="";
 $secureHash=new secureHash();
 $letters=array("a","b","c","d","e","f","g","?","$","@","%","#","h","i","j","k","l","m",
 	"n","o","p","q","r","s","t","u","w","x","y","z","(",")","!");
-for($i=0;$i<64;$i++){
+for($i=0;$i<16;$i++){
 	$inputPassword.=$letters[rand(0,count($letters)-1)];
 }
 echo "Generated password: $inputPassword \n";
