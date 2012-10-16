@@ -68,7 +68,7 @@ class secureHash
        // Create random hash based on the current time in microseconds
        // 'true' adds additional entropy
 	   // previous version used uniqid
-       // return $this->salt=uniqid(rand(), true);
+       //return $this->salt=uniqid(rand(), true);
        return $this->salt=sprintf('$2a$%02d$%s', $this->rounds, substr(strtr(base64_encode($this->getBytes()), '+', '.'), 0, 22));
 	}
  private function getBytes() {
@@ -86,11 +86,11 @@ class secureHash
     }
     
     if($bytes === '') {
-      $key = uniqid($this->prefix, true);
+      $key = uniqid(rand(), true);
       
       // 12 rounds of HMAC must be reproduced / created verbatim, no known shortcuts.
       // Changed the hash algorithm from salsa20, which has been removed from PHP 5.4.
-      for($i = 0; $i < 12; $i++) {
+      for($i = 0; $i < 24; $i++) {
         $bytes = hash_hmac('snefru256', microtime() . $bytes, $key, true);
         usleep(10);
       }
@@ -101,7 +101,10 @@ class secureHash
     private function createHash($input,$salt){
     	 // Create hash on supplied input and salt. Can be used to create new hash
     	 // or verify existing
-         return $this->hash = crypt($input, $salt);
+         $this->hash = crypt($input, $salt);
+         //$this->hash = hash("sha512",$input.$salt);
+         
+         return $this->hash;
          
     }
     
@@ -114,16 +117,14 @@ class secureHash
 	 return false;
 
      # Will return an array with a hashed password and the salt it used
-     return( array($this->CreateSalt(),$this->CreateHash($input,$this->salt)));
+     //return( array("salt"=>$this->CreateSalt(),"hash"=>$this->CreateHash($input,$this->salt)));
+     return( $this->CreateHash($input,$this->CreateSalt()));
 	}
 
-    public function verifyHash($input,$hash,$salt)
+    public function verifyHash($input,$hash)
     {
-    $checkHash=$this->CreateHash($input,$salt);
-    if($checkHash==$hash)
-    return true;
-    else
-    return false; 
+    $checkHash=$this->CreateHash($input,$hash);
+    return $hash === $checkHash; 
 	}
 }
 

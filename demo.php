@@ -53,13 +53,17 @@
 	$securePassword=new secureHash();
 	
     $inputPassword='correct horse battery staple';
-    $hashArray=$securePassword->returnHash($inputPassword);
-    var_dump($hashArray);
-    $salt=$hashArray[0];
-	$hash=$hashArray[1];
+    $hash=$securePassword->returnHash($inputPassword);
+    var_dump($hash);
+    
+    /*
+    * Verification is as simple as calling the class  
+    * and passing the submitted password and the hash
+    * if the hash matches, the function returns true
+    */
     
     $verifyPassword='correct horse battery staple';
-    $verifyHash=$securePassword->verifyHash($verifyPassword,$hash,$salt);
+    $verifyHash=$securePassword->verifyHash($verifyPassword,$hash);
     var_dump($verifyHash);
     
 ?>
