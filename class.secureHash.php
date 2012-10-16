@@ -53,9 +53,9 @@
     class secureHash
     {
 
-        private $rounds;
+	    private $rounds;
 
-        public function __construct($rounds=12){
+        public function __construct($rounds=16){
             if(CRYPT_BLOWFISH != 1) {
                 throw new Exception("Bcrypt is not supported. Please upgrade your installation.");
             }
@@ -63,15 +63,19 @@
             $this->rounds = $rounds;
         }
 
+        
         private function createSalt(){
-            // Create random hash based on the current time in microseconds
-            // 'true' adds additional entropy
-            // previous version used uniqid
-            //return $this->salt=uniqid(rand(), true);
             return $this->salt=sprintf('$2a$%02d$%s', $this->rounds, substr(strtr(base64_encode($this->getBytes()), '+', '.'), 0, 22));
         }
+        
+        
+        /**
+         * getBytes function.
+         * Will generate a random string to use for salting
+         * @access private
+         * @return string
+         */
         private function getBytes() {
-            // this entire function is a direct copy of the function with the same name from https://gist.github.com/1070401    
             $bytes = '';
             if(function_exists('openssl_random_pseudo_bytes') &&
                 (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN')) {
@@ -87,9 +91,8 @@
             if($bytes === '') {
                 $key = uniqid(rand(), true);
 
-                // 12 rounds of HMAC must be reproduced / created verbatim, no known shortcuts.
-                // Changed the hash algorithm from salsa20, which has been removed from PHP 5.4.
-                for($i = 0; $i < 24; $i++) {
+                // 12 rounds of HMAC must be reproduced 
+                for($i = 0; $i <12; $i++) {
                     $bytes = hash_hmac('snefru256', microtime() . $bytes, $key, true);
                     usleep(10);
                 }
@@ -97,25 +100,46 @@
 
             return $bytes;
         }
+        
+        
+        /**
+         * createHash function.
+         * Create hash on supplied input and salt. Can be used to create new hash or verify existing
+         * @access private
+         * @param mixed $input
+         * @param mixed $salt
+         * @return string
+         */
         private function createHash($input,$salt){
-            // Create hash on supplied input and salt. Can be used to create new hash
-            // or verify existing
-            $this->hash = crypt($input, $salt);
-            //$this->hash = hash("sha512",$input.$salt);
-
-            return $this->hash;
-
+            return $this->hash = crypt($input, $salt);
         }
 
+        
+        /**
+         * returnHash function.
+         * Will return a string with a hashed password. Will throw error if submitted
+         * password is too short. 
+         * @access public
+         * @param mixed $input
+         * @return string
+         */
         public function returnHash($input)
         {
-            if(strlen($input)<3)
+            if(strlen($input)<4)
                 throw new Exception("Submitted password is too short.");
 
-            # Will return a string with a hashed password and the salt it used
             return( $this->CreateHash($input,$this->CreateSalt()));
         }
 
+        
+        /**
+         * verifyHash function.
+         * Checks submitted password against hash. Will return true if it's a match
+         * @access public
+         * @param mixed $input
+         * @param mixed $hash
+         * @return bool
+         */
         public function verifyHash($input,$hash)
         {
             $checkHash=$this->CreateHash($input,$hash);
