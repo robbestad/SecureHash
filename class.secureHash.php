@@ -62,9 +62,9 @@
             $pre = '$2a$'.$this->rounds.'$';
             $end = '$';
             $salt = "";
-			$bcryptBaseChars ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789./$';
+			$bcryptBaseChars ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             
-			for($i=0; $i<18; $i++){
+			for($i=0; $i<21; $i++){
 			    $salt .= $bcryptBaseChars[mt_rand(0,strlen($bcryptBaseChars)-1)];
 			}
             
