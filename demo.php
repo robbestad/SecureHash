@@ -48,9 +48,9 @@
   *
   */
     
-	require("class.secureHash.php");
+    require("class.secureHash.php");
 
-	$securePassword=new secureHash();
+    $securePassword=new secureHash();
 	
     $inputPassword='correct horse battery staple';
     $hash=$securePassword->returnHash($inputPassword);

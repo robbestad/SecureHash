@@ -13,10 +13,12 @@ The password simply cannot be decrypted without knowing the password, salt and h
 Usage:
 ==========
 Include the class and create the hash like so:
+
 $securePassword=new secureHash();
 $hash=$securePassword->returnHash($user_submitted_password);
 
 Verification is as simple as calling the class  
 and passing the submitted password and the hash
 if the hash matches, the function returns true
+
 $verify=$securePassword->verifyHash($user_submitted_password,$hash);
