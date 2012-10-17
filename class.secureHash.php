@@ -36,7 +36,8 @@
     *  SUCH DAMAGE.
     *
     */
-
+    namespace Encryption\Blowfish;
+    
     class secureHash
     {
 

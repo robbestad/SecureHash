@@ -5,20 +5,11 @@
  *  http://www.robbestad.com
  *
  *  Description:
- *  SecureHash creates a hash based on blowfish.
+ *  secureHash creates a hash based on blowfish.
  *  If the passwords gets compromised after this is implemented, then you
  *  have problems with packet sniffing, or your users select really bad passwords.
  *  Always use SSL when transmitting and authenticating user passwords.
- *
- *  USAGE:
- *  Instantiate class:
- *  $securePassword=new secureHash();
- *
- *
- *  To check the hash:
- *  if($verifyHash=$securePassword->verifyHash("inputPassword",$hash,$salt)) { ... }
- *  submit submitted password plus previously stored hash and salt, returns true if match, false if not
- *
+
  *  License:
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
@@ -47,7 +38,7 @@ require("class.secureHash.php");
 
 $hash="";
 $inputPassword="";
-$secureHash=new secureHash();
+$secureHash=new \Encryption\Blowfish\secureHash();
 $letters=array("a","b","c","d","e","f","g","?","$","@","%","#","h","i","j","k","l","m",
 	"n","o","p","q","r","s","t","u","w","x","y","z","(",")","!");
 for($i=0;$i<16;$i++){
@@ -81,7 +72,7 @@ try{
 * If the hash matches, the function returns true
 */
 
-$secureHash=new secureHash();
+$secureHash=new \Encryption\Blowfish\secureHash();
 $verifyPassword=$inputPassword; 
 
 try{
