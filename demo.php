@@ -1,7 +1,7 @@
 <?php
 /**
  *  SVEN ANDERS ROBBESTAD (C) 2009 <anders@robbestad.com>.
- *  http://www.svenardo.com
+ *  http://www.robestad.no
  *  http://www.robbestad.com
  *
  *  Description:
@@ -50,7 +50,7 @@ echo "Generated password: $inputPassword \n";
 * Create hash
 *
 * Create the hash by calling the class
-* and pass the submitted password. 
+* and pass the submitted password.
 * This will generate a hash, which you can store
 * for later verification
 */
@@ -73,11 +73,11 @@ try{
 */
 
 $secureHash=new \Encryption\Blowfish\secureHash();
-$verifyPassword=$inputPassword; 
+$verifyPassword=$inputPassword;
 
 try{
 	echo $secureHash->verifyHash($verifyPassword,$hash) ?  "Passed verification\n" :  "Verification failed\n";
-	
+
 } catch (Exception $e) {
 	echo 'Caught exception: ',  $e->getMessage(), "\n";
 }
