@@ -55,8 +55,6 @@ for($i=0;$i<16;$i++){
 }
 echo "Generated password: $inputPassword \n";
 
-
-
 /*
 * Create hash
 *

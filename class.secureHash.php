@@ -64,7 +64,7 @@
             $salt = "";
 			$bcryptBaseChars ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             
-			for($i=0; $i<21; $i++){
+			for($i=0; $i<22; $i++){
 			    $salt .= $bcryptBaseChars[mt_rand(0,strlen($bcryptBaseChars)-1)];
 			}
             
@@ -96,7 +96,7 @@
          */
         public function returnHash($input)
         {
-            if(strlen($input)<4)
+            if(strlen($input)<3)
                 throw new Exception("Submitted password is too short.");
 
             return( $this->CreateHash($input,$this->CreateSalt()));
